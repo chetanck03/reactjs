@@ -11,6 +11,8 @@ interface Todo {
 function App() {
   const [data, setData] = useState<Todo[]>([]);
 
+  const[todo, setTodo]=useState(1);
+
   useEffect(() => {
     axios.get('https://jsonplaceholder.typicode.com/todos/')
       .then(response => {
@@ -18,33 +20,21 @@ function App() {
       });
   }, []);
 
-  // let [data, setData] = useState([
-  //   {
-  //     id:1,
-  //     title:"hi there!",
-  //     completed:true
-  //   }
-  // ]);
-
-  // setTimeout(() => {
-
-  //   if(Math.random()<0.75){
-  //     setData([...data,{
-  //     id:1,
-  //     title:"Adding entry!",
-  //     completed:false
-  //     }])
-
-  //   }else{
-  //     setData([data[0]])
-  //   }
-    
-  // }, 1000);
-
   return (
     <>
       <div>
         Hello World!
+
+        <div style={{padding:20,margin:20,background:"red"}}>
+          hey 
+
+          <button onClick={()=>setTodo(1)}>1</button>
+          <button onClick={()=>setTodo(2)}>2</button>
+          <button onClick={()=>setTodo(3)}>3</button>
+
+          <Todo id={todo}/>
+
+        </div>
 
         <div style={{padding:20 , margin:20 ,backgroundColor:"yellow"}}>
           {data.map(d => <p key={d.id}>{d.id}: {d.title} : {d.completed ? "true" : "false"}</p>)}
@@ -53,6 +43,38 @@ function App() {
       </div>
     </>
   );
+}
+
+function Todo(props:any){
+  const [title,setTitle] = useState("")
+
+  const id = props.id
+
+  console.log(id);
+
+  useEffect(()=>{
+
+    axios.get('https://jsonplaceholder.typicode.com/todos/'+id)
+    .then(r=>{
+      setTitle(r.data.title)
+    })
+
+   let intervalClock = setInterval(()=>{
+      console.log("Pls wait for sec"+id );
+    },id*1000)
+
+    return () =>{
+      clearInterval(intervalClock)
+    }
+
+  },[id])
+  
+  return(
+    <>
+   {title}
+    </>
+
+  )
 }
 
 export default App;
